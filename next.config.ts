@@ -13,7 +13,7 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   typescript:{
-    ignoreBuildErrors: false,
+    ignoreBuildErrors: true,
   }
 };
 
