@@ -9,7 +9,9 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 async function getBlog(slug: string) {
+  console.log("getBaseUrl()", getBaseUrl());
   const res = await fetch(`${getBaseUrl()}/api/blogs?slug=${slug}`, {
+    method: 'GET',
     next: {
       tags: [`blog:${slug}`],
       revalidate: 30,
