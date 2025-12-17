@@ -2,7 +2,7 @@ import { getBaseUrl } from '@/lib/url';
 import Link from 'next/link';
 
 async function getBlogsByTag(tag: string) {
-  const res = await fetch(`${getBaseUrl()}/api/blogs?tag=${tag}`, {
+  const res = await fetch(`${getBaseUrl()}api/blogs?tag=${tag}`, {
     next: {
       tags: [`tag:${tag}`, 'blogs'], // Revalidate if tag page specific or general list changes? Prompt says "All associated tag:{tagName}" on update.
       revalidate: 60,
@@ -24,7 +24,7 @@ export default async function TagPage({
   const { tag } = await params;
   const decodeTag = decodeURIComponent(tag);
   const blogs = await getBlogsByTag(decodeTag);
-
+ 
   return (
     <div className="container mx-auto px-4 py-12 max-w-4xl">
       <div className="border-b border-zinc-200 pb-8 mb-8">
@@ -32,12 +32,12 @@ export default async function TagPage({
            {decodeTag}
         </h1>
         <p className="text-zinc-500">
-           {blogs.length} stories
+           {blogs.blogs.length} stories
         </p>
       </div>
 
       <div className="space-y-10">
-        {blogs.map((blog: any) => (
+        {blogs.blogs.map((blog: any) => (
             <article key={blog.id} className="flex flex-col gap-2 group cursor-pointer">
             <Link href={`/blog/${blog.slug}`}>
               <div className="flex items-center gap-2 mb-2">
@@ -77,7 +77,7 @@ export default async function TagPage({
           </article>
         ))}
          
-         {blogs.length === 0 && (
+         {blogs.blogs.length === 0 && (
             <div className="text-center py-20 text-zinc-500">
                 No stories found for this tag.
             </div>

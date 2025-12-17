@@ -9,7 +9,6 @@ import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 async function getBlog(slug: string) {
-  console.log("getBaseUrl()", getBaseUrl());
   const res = await fetch(`${getBaseUrl()}/api/blogs?slug=${slug}`, {
     method: 'GET',
     next: {
@@ -20,7 +19,6 @@ async function getBlog(slug: string) {
 
   if (!res.ok) {
     if (res.status === 404) return null;
-    console.log("Error in getBlog", res.status, res.statusText);
     throw new Error('Failed to fetch blog');
   }
 
