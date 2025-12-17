@@ -88,6 +88,12 @@ export function BlogContent({ content }: { content: any }) {
                       )}
                   </figure>
               );
+          case 'code':
+              return (
+                  <pre key={block.id} className="bg-zinc-900 text-zinc-50 text-sm rounded-lg p-4 overflow-x-auto my-6">
+                      <code>{block.data.code}</code>
+                  </pre>
+              );
 
           default:
             return null;

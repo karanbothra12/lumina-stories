@@ -12,6 +12,8 @@ import Quote from '@editorjs/quote';
 import ImageTool from '@editorjs/image';
 // @ts-ignore
 import Checklist from '@editorjs/checklist';
+// @ts-ignore
+import CodeTool from '@editorjs/code';
 
 interface EditorProps {
   data: any;
@@ -82,6 +84,10 @@ export default function Editor({ data, onChange, holder }: EditorProps) {
                 }
               }
             }
+          },
+          code: {
+            class: CodeTool as any,
+            inlineToolbar: true,
           }
         },
         onChange: async () => {
