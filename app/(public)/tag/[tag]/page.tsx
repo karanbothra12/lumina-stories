@@ -1,19 +1,26 @@
-import { getBaseUrl } from '@/lib/url';
+import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 
 async function getBlogsByTag(tag: string) {
-  const res = await fetch(`${getBaseUrl()}api/blogs?tag=${tag}`, {
-    next: {
-      tags: [`tag:${tag}`, 'blogs'], // Revalidate if tag page specific or general list changes? Prompt says "All associated tag:{tagName}" on update.
-      revalidate: 60,
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch blogs');
+  // Direct DB call
+  try {
+    const blogs = await prisma.blog.findMany({
+      where: {
+        published: true,
+        tags: { some: { name: tag } }
+      },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        author: { select: { name: true, image: true } },
+        tags: true,
+        _count: { select: { likes: true, comments: true } }
+      }
+    });
+    return { blogs };
+  } catch (error) {
+    console.error("Error fetching tag blogs:", error);
+    return { blogs: [] };
   }
-
-  return res.json();
 }
 
 export default async function TagPage({

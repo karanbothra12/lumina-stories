@@ -7,22 +7,23 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Metadata } from 'next';
 import { Suspense } from 'react';
+import { prisma } from '@/lib/prisma';
 
 async function getBlog(slug: string) {
-  const res = await fetch(`${getBaseUrl()}/api/blogs?slug=${slug}`, {
-    method: 'GET',
-    next: {
-      tags: [`blog:${slug}`],
-      revalidate: 30,
-    },
-  });
-
-  if (!res.ok) {
-    if (res.status === 404) return null;
-    throw new Error('Failed to fetch blog');
+  try {
+    const blog = await prisma.blog.findUnique({
+      where: { slug },
+      include: {
+        author: { select: { name: true, image: true } },
+        tags: true,
+        _count: { select: { likes: true, comments: true } },
+      },
+    });
+    return blog;
+  } catch (error) {
+    console.error("Error fetching blog:", error);
+    return null;
   }
-
-  return res.json();
 }
 
 export async function generateMetadata({
