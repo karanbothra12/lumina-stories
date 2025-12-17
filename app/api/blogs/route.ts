@@ -85,6 +85,9 @@ const createBlogSchema = z.object({
   tags: z.array(z.string()),
   published: z.boolean().optional(),
   coverImage: z.string().optional(),
+  seoTitle: z.string().min(5, 'SEO title must be at least 5 characters'),
+  seoDescription: z.string().min(20, 'SEO description must be at least 20 characters'),
+  seoKeywords: z.string().optional(),
 });
 
 function generateSlug(title: string) {
@@ -114,7 +117,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Invalid input' }, { status: 400 });
     }
 
-    const { title, content, tags, published, coverImage } = result.data;
+    const { title, content, tags, published, coverImage, seoTitle, seoDescription, seoKeywords } = result.data;
     const slug = result.data.slug || generateSlug(title);
 
     const tagConnect = tags.map((name) => ({
@@ -128,6 +131,9 @@ export async function POST(request: NextRequest) {
         content,
         slug,
         coverImage,
+        seoTitle,
+        seoDescription,
+        seoKeywords,
         published: published ?? false,
         authorId: session.user.id,
         tags: {

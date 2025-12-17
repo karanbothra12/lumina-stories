@@ -41,10 +41,14 @@ export async function generateMetadata({
     title: blog.seoTitle || blog.title,
     description: blog.seoDescription || `Read ${blog.title} on Lumina`,
     keywords: blog.seoKeywords ? blog.seoKeywords.split(',').map(k => k.trim()) : undefined,
+    alternates: {
+      canonical: `${getBaseUrl()}/blog/${blog.slug}`,
+    },
     openGraph: {
         title: blog.seoTitle || blog.title,
         description: blog.seoDescription || `Read ${blog.title} on Lumina`,
         type: 'article',
+        url: `${getBaseUrl()}/blog/${blog.slug}`,
         authors: [blog.author.name || 'Anonymous'],
         images: blog.coverImage ? [blog.coverImage] : undefined,
     }

@@ -44,8 +44,8 @@ model Blog {
   updatedAt DateTime @updatedAt
   
   // SEO Fields
-  seoTitle       String?
-  seoDescription String?
+  seoTitle       String  @default("")
+  seoDescription String  @default("")
   seoKeywords    String? 
 
   author    User     @relation(fields: [authorId], references: [id])

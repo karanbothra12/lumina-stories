@@ -97,4 +97,7 @@ To cover the full "Flow" of the application, consider adding:
     *   Expect "Publish" / "Delete" buttons to be visible.
 2.  **API Route Tests:**
     *   Test `POST /api/blogs` with valid/invalid data using `node-mocks-http`.
+3.  **SEO Metadata Snapshot:**
+    *   Unit-test `generateMetadata` for blogs by mocking `getBlog` and verifying it prioritizes `seoTitle`/`seoDescription`.
+    *   Add smoke tests for `app/sitemap.ts` to ensure published blogs/tags are emitted.
 

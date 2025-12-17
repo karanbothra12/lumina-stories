@@ -45,6 +45,12 @@ A modern, high-performance full-stack blogging platform built with **Next.js 15 
 5.  **Rich Editor:**
     *   Medium-like editing experience.
     *   Support for Cover Images, Tags, and structured JSON content storage.
+    *   Built-in SEO panel (Title / Description / Keywords) per blog.
+
+6.  **Search Engine Optimization:**
+    *   Global OpenGraph/Twitter metadata with dynamic templates.
+    *   Per-blog SEO overrides + keyword tagging.
+    *   Auto-generated `sitemap.xml` and `robots.txt`.
 
 ## 🚀 Getting Started
 
