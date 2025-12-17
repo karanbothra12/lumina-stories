@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Blog, Tag } from '@prisma/client';
 import { api } from '@/lib/api-client';
+import Image from 'next/image';
 
 type BlogWithAuthorAndTags = Blog & {
   author: { name: string | null; image: string | null };

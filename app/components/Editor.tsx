@@ -30,7 +30,7 @@ export default function Editor({ data, onChange, holder }: EditorProps) {
         placeholder: 'Tell your story...',
         tools: {
           header: {
-            class: Header,
+            class: Header as any,
             inlineToolbar: true,
             config: {
               levels: [2, 3],
@@ -38,22 +38,22 @@ export default function Editor({ data, onChange, holder }: EditorProps) {
             },
           },
           list: {
-            class: List,
+            class: List as any,
             inlineToolbar: true,
             config: {
               defaultStyle: 'unordered'
             }
           },
           checklist: {
-            class: Checklist,
+            class: Checklist as any,
             inlineToolbar: true,
           },
           quote: {
-            class: Quote,
+            class: Quote as any,
             inlineToolbar: true,
           },
           image: {
-            class: ImageTool,
+            class: ImageTool as any,
             config: {
               uploader: {
                 uploadByFile(file: File) {

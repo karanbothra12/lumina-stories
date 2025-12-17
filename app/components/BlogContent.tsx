@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import React from 'react';
 
 export function BlogContent({ content }: { content: any }) {
   if (!content) return null;
@@ -20,9 +21,13 @@ export function BlogContent({ content }: { content: any }) {
       {blocks.map((block: any) => {
         switch (block.type) {
           case 'header':
-            const HeaderTag = `h${block.data.level}` as keyof JSX.IntrinsicElements;
-            return <HeaderTag key={block.id} className="font-bold mt-8 mb-4 text-zinc-900" dangerouslySetInnerHTML={{ __html: block.data.text }} />;
-            
+            const HeaderTag = `h${block.data.level}`;
+        
+            return React.createElement(HeaderTag, {
+                key: block.id,
+                className: "font-bold mt-8 mb-4 text-zinc-900",
+                dangerouslySetInnerHTML: { __html: block.data.text }
+              });            
           case 'paragraph':
             return <p key={block.id} className="text-xl leading-relaxed text-zinc-800 mb-6" dangerouslySetInnerHTML={{ __html: block.data.text }} />;
             
