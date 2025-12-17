@@ -18,6 +18,7 @@ async function getBlog(slug: string) {
 
   if (!res.ok) {
     if (res.status === 404) return null;
+    console.log("Error in getBlog", res.status, res.statusText);
     throw new Error('Failed to fetch blog');
   }
 
