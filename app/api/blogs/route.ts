@@ -112,9 +112,36 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     const result = createBlogSchema.safeParse(body);
-
+    
     if (!result.success) {
-      return NextResponse.json({ message: 'Invalid input' }, { status: 400 });
+      // Robust error handling for Zod v4/v3 differences
+      let issues: any[] = [];
+      const err: any = result.error;
+      
+      if (Array.isArray(err.errors)) {
+        issues = err.errors;
+      } else if (Array.isArray(err.issues)) {
+        issues = err.issues;
+      } else {
+        try {
+           issues = JSON.parse(err.message);
+        } catch (e) {
+           issues = [{ message: err.message, path: [] }];
+        }
+      }
+
+      const mappedErrors = issues.map((issue: any) => ({
+        field: issue.path ? issue.path.join('.') : 'unknown',
+        message: issue.message,
+      }));
+
+      return NextResponse.json(
+        {
+          message: mappedErrors.map((e) => e.message).join('. '),
+          errors: mappedErrors,
+        },
+        { status: 400 }
+      );
     }
 
     const { title, content, tags, published, coverImage, seoTitle, seoDescription, seoKeywords } = result.data;
@@ -147,6 +174,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(blog, { status: 201 });
   } catch (error) {
+    console.error("Error creating blog:", error);
     return NextResponse.json({ message: 'Error creating blog' }, { status: 500 });
   }
 }

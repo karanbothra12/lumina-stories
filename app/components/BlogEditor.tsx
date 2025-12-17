@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api-client';
 import dynamic from 'next/dynamic';
@@ -21,6 +21,7 @@ export function BlogEditor({ initialData, isEditing = false }: BlogEditorProps) 
   const [title, setTitle] = useState(initialData?.title || '');
   const [slug, setSlug] = useState(initialData?.slug || '');
   const [content, setContent] = useState(initialData?.content || { blocks: [] });
+  const contentRef = useRef(content);
   const [tags, setTags] = useState(initialData?.tags?.map((t: any) => t.name).join(', ') || '');
   const [published, setPublished] = useState(initialData?.published || false);
   const [coverImage, setCoverImage] = useState(initialData?.coverImage || '');
@@ -59,10 +60,12 @@ export function BlogEditor({ initialData, isEditing = false }: BlogEditorProps) 
     try {
       const tagList = tags.split(',').map((t: string) => t.trim()).filter(Boolean);
 
+      const editorContent = contentRef.current || content;
+
       const payload = {
         title,
         slug: isEditing ? slug : undefined,
-        content: content,
+        content: editorContent,
         tags: tagList,
         published,
         coverImage,
@@ -80,7 +83,12 @@ export function BlogEditor({ initialData, isEditing = false }: BlogEditorProps) 
       router.push('/admin');
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'Something went wrong');
+      const message = err.message || 'Something went wrong';
+      if (message.toLowerCase().includes('seo')) {
+        setSeoError(message);
+      } else {
+        setError(message);
+      }
     } finally {
       setLoading(false);
     }
@@ -177,7 +185,10 @@ export function BlogEditor({ initialData, isEditing = false }: BlogEditorProps) 
             <Editor
               holder="editorjs-container"
               data={content}
-              onChange={setContent}
+              onChange={(data) => {
+                setContent(data);
+                contentRef.current = data;
+              }}
             />
           </div>
         </div>

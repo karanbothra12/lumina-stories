@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { Blog, Tag } from '@prisma/client';
 import { BlogFeed } from '@/app/components/BlogFeed';
+import { auth } from '@/lib/auth';
 
 type BlogWithAuthorAndTags = Blog & {
   author: { name: string | null; image: string | null };
@@ -52,7 +53,8 @@ async function getInitialBlogs() {
 }
 
 export default async function HomePage() {
-  const data = await getInitialBlogs();
+  const [data, session] = await Promise.all([getInitialBlogs(), auth()]);
+  const startWritingHref = session?.user ? '/admin/blogs/new' : '/login';
 
   return (
     <div>
@@ -65,7 +67,7 @@ export default async function HomePage() {
                 Discover new perspectives, deep dives, and expert knowledge on topics you love.
             </p>
             <div className="flex justify-center gap-4">
-                 <Link href="/register" className="bg-zinc-900 text-white px-8 py-3 rounded-full font-medium hover:bg-zinc-800 transition-colors text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+                 <Link href={startWritingHref} className="bg-zinc-900 text-white px-8 py-3 rounded-full font-medium hover:bg-zinc-800 transition-colors text-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
                     Start Writing
                  </Link>
                  <Link href="#reading-list" className="bg-white text-zinc-900 border border-zinc-200 px-8 py-3 rounded-full font-medium hover:border-zinc-900 transition-colors text-lg">
@@ -107,7 +109,7 @@ export default async function HomePage() {
                       <p className="text-zinc-600 mb-4 text-sm leading-relaxed">
                           Share your voice with a growing community of readers and thinkers.
                       </p>
-                      <Link href="/admin/blogs/new" className="text-zinc-900 font-medium hover:underline text-sm">
+                      <Link href={startWritingHref} className="text-zinc-900 font-medium hover:underline text-sm">
                           Start writing →
                       </Link>
                   </div>

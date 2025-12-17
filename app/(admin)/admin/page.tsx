@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { Role } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
@@ -114,6 +114,7 @@ export default async function AdminDashboard({
                                         });
                                         revalidateTag('blogs', 'default');
                                         revalidateTag(`blog:${updated.slug}`, 'default');
+                                        revalidatePath('/admin');
                                     }
                                 }} className="inline-block">
                                     <button className="text-zinc-600 hover:text-zinc-900 mr-4 text-xs uppercase tracking-wide">
@@ -134,6 +135,7 @@ export default async function AdminDashboard({
                                         await prisma.blog.delete({ where: { id: blog.id } });
                                         revalidateTag('blogs', 'default');
                                         revalidateTag(`blog:${b.slug}`, 'default');
+                                        revalidatePath('/admin');
                                     }
                                     }} className="inline-block ml-4">
                                          <button className="text-red-600 hover:text-red-900 text-xs uppercase tracking-wide">

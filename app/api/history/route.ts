@@ -62,11 +62,30 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'Blog ID required' }, { status: 400 });
     }
 
+    // Ensure the session user still exists (could have been deleted/deactivated)
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    });
+    if (!user) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 });
+    }
+    if (!user.isActive) {
+      return NextResponse.json({ message: 'Please contact admin' }, { status: 403 });
+    }
+
+    const blog = await prisma.blog.findUnique({
+      where: { id: blogId },
+      select: { id: true },
+    });
+    if (!blog) {
+      return NextResponse.json({ message: 'Blog not found' }, { status: 404 });
+    }
+
     // Upsert: Create if new, update visitedAt if exists
     await prisma.history.upsert({
       where: {
         userId_blogId: {
-          userId: session.user.id,
+          userId: user.id,
           blogId,
         },
       },
@@ -74,7 +93,7 @@ export async function POST(request: NextRequest) {
         visitedAt: new Date(),
       },
       create: {
-        userId: session.user.id,
+        userId: user.id,
         blogId,
       },
     });
@@ -82,6 +101,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ recorded: true });
 
   } catch (error) {
+    console.log("Error in history POST", error);
     return NextResponse.json({ message: 'Internal Error' }, { status: 500 });
   }
 }
