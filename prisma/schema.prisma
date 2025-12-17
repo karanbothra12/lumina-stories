@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+  adapter  = "prisma-adapter-pg"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+  MAINTAINER
+  VIEWER
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String?
+  email     String   @unique
+  password  String?
+  image     String?
+  role      Role     @default(USER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blogs     Blog[]
+  likes     Like[]
+  comments  Comment[]
+  bookmarks Bookmark[]
+  history   History[]
+}
+
+model Blog {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  content   Json
+  coverImage String?
+  published Boolean  @default(false)
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  author    User     @relation(fields: [authorId], references: [id])
+  tags      Tag[]
+  likes     Like[]
+  comments  Comment[]
+  bookmarks Bookmark[]
+  history   History[]
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  name  String @unique
+  blogs Blog[]
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  blogId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  userId    String
+  blogId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  blogId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId])
+}
+
+model History {
+  id        String   @id @default(cuid())
+  userId    String
+  blogId    String
+  visitedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId])
+}
