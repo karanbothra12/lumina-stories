@@ -24,6 +24,12 @@ export function BlogEditor({ initialData, isEditing = false }: BlogEditorProps) 
   const [tags, setTags] = useState(initialData?.tags?.map((t: any) => t.name).join(', ') || '');
   const [published, setPublished] = useState(initialData?.published || false);
   const [coverImage, setCoverImage] = useState(initialData?.coverImage || '');
+  const [seoTitle, setSeoTitle] = useState(initialData?.seoTitle || '');
+  const [seoDescription, setSeoDescription] = useState(initialData?.seoDescription || '');
+  const [seoKeywords, setSeoKeywords] = useState(initialData?.seoKeywords || '');
+  const [showSeo, setShowSeo] = useState(
+    Boolean(initialData?.seoTitle || initialData?.seoDescription || initialData?.seoKeywords)
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,6 +46,9 @@ export function BlogEditor({ initialData, isEditing = false }: BlogEditorProps) 
         tags: tagList,
         published,
         coverImage,
+        seoTitle,
+        seoDescription,
+        seoKeywords,
       };
 
       if (isEditing) {
@@ -157,6 +166,54 @@ export function BlogEditor({ initialData, isEditing = false }: BlogEditorProps) 
                     className="w-4 h-4 text-zinc-900 border-zinc-300 rounded focus:ring-zinc-900"
                 />
                 <label htmlFor="published" className="text-sm font-medium text-zinc-700">Publish immediately</label>
+            </div>
+
+            <div className="pt-4 border-t border-zinc-100">
+                <button
+                    type="button"
+                    onClick={() => setShowSeo((prev) => !prev)}
+                    className="text-sm font-medium text-zinc-600 hover:text-zinc-900 flex items-center gap-2 mb-3"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-4 h-4 transition-transform ${showSeo ? 'rotate-90' : ''}`}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
+                    SEO Settings
+                </button>
+
+                {showSeo && (
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-zinc-700 mb-1">SEO Title</label>
+                            <input
+                                type="text"
+                                value={seoTitle}
+                                onChange={(e) => setSeoTitle(e.target.value)}
+                                className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                                placeholder="Custom title for search engines"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-zinc-700 mb-1">Meta Description</label>
+                            <textarea
+                                value={seoDescription}
+                                onChange={(e) => setSeoDescription(e.target.value)}
+                                rows={3}
+                                className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                                placeholder="Short summary shown in search results"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-zinc-700 mb-1">Keywords</label>
+                            <input
+                                type="text"
+                                value={seoKeywords}
+                                onChange={(e) => setSeoKeywords(e.target.value)}
+                                className="w-full px-3 py-2 border border-zinc-300 rounded-md focus:outline-none focus:ring-1 focus:ring-zinc-900"
+                                placeholder="Comma separated keywords"
+                            />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
       </div>

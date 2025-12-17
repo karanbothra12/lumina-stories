@@ -38,11 +38,12 @@ export async function generateMetadata({
   }
 
   return {
-    title: blog.title,
-    description: `Read ${blog.title} on Lumina`,
+    title: blog.seoTitle || blog.title,
+    description: blog.seoDescription || `Read ${blog.title} on Lumina`,
+    keywords: blog.seoKeywords ? blog.seoKeywords.split(',').map(k => k.trim()) : undefined,
     openGraph: {
-        title: blog.title,
-        description: `Read ${blog.title} on Lumina`,
+        title: blog.seoTitle || blog.title,
+        description: blog.seoDescription || `Read ${blog.title} on Lumina`,
         type: 'article',
         authors: [blog.author.name || 'Anonymous'],
         images: blog.coverImage ? [blog.coverImage] : undefined,

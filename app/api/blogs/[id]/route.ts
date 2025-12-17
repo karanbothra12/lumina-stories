@@ -37,6 +37,9 @@ const updateBlogSchema = z.object({
   tags: z.array(z.string()).optional(),
   published: z.boolean().optional(),
   coverImage: z.string().optional(),
+  seoTitle: z.string().optional(),
+  seoDescription: z.string().optional(),
+  seoKeywords: z.string().optional(),
 });
 
 export async function PUT(
@@ -67,7 +70,7 @@ export async function PUT(
       return NextResponse.json({ message: 'Invalid input' }, { status: 400 });
     }
 
-    const { title, content, slug, tags, published, coverImage } = result.data;
+    const { title, content, slug, tags, published, coverImage, seoTitle, seoDescription, seoKeywords } = result.data;
 
     const data: any = {
       ...(title && { title }),
@@ -75,6 +78,9 @@ export async function PUT(
       ...(slug && { slug }),
       ...(published !== undefined && { published }),
       ...(coverImage !== undefined && { coverImage }),
+      ...(seoTitle !== undefined && { seoTitle }),
+      ...(seoDescription !== undefined && { seoDescription }),
+      ...(seoKeywords !== undefined && { seoKeywords }),
     };
 
     if (tags) {
